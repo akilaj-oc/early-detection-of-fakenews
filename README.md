@@ -14,7 +14,7 @@
 story ai is *true*, and L(ai)=1 denotes ai is *fake*.
 
 **PartialPropagationPath** of a given news story ai as
-P(ai, T) = (xj ,t < T), where T is a *detection deadline* after which all the observed data cannot be used in detecting fake news.
+P(ai, T) = ((xj ,t < T)), where T is a *detection deadline* after which all the observed data cannot be used in detecting fake news.
 
 ## Database Object Structure
 
