@@ -1,13 +1,14 @@
 from utils import TweetsMongoDB
 
 import json
+import glob
 
 from anytree.importer import DictImporter
 from anytree import PreOrderIter
 
 
-# create cascades
 class Cascade(object):
+    # create cascades
     @staticmethod
     def create_cascade(file_name, ground_truth):
         # read json
@@ -26,3 +27,25 @@ class Cascade(object):
                     {'user_sequence': [node.name for node in list(leaf.path)], 'ground_truth': ground_truth})
             except Exception as e:
                 raise e
+
+
+def main():
+    for file in glob.glob(r'..\data\*.json'):
+        # extract ground truth
+        ground_truth = file.split('_')[1]
+        print(file)
+
+        # assign a boolean value
+        if ground_truth == 'true':
+            ground_truth = True
+        elif ground_truth == 'false':
+            ground_truth = False
+
+        print(ground_truth)
+
+        # populate database
+        Cascade.create_cascade(file, ground_truth)
+
+
+if __name__ == '__main__':
+    main()
