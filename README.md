@@ -1,14 +1,18 @@
 ## TODO
 
- Read propagation paths from database,
+System 1
+ Read propagation paths from database as a variable length sequence
  Transform propagation paths to fixed length sequences, RNN-based propagation path representation, 
  CNN-based propagation path representation, and propagation path classification,
+
+ System 2
+
 
 ## Definitions
 
 **UserVector** represts the characteristics of each user
 
-**PropagationPath** is defined as a *variable length multivarient time series* P(ai) = (...,(xj , t),...), in which each tuple (xj , t) denotes that user uj tweets/retweets the news story ai at time t. we set the time of a source tweet being posted to 0. Thus, t > 0 refers to the time of a retweet being posted.
+**PropagationPath** is defined as a *variable length multivarient tim Te series* P(ai) = (...,(xj , t),...), in which each tuple (xj , t) denotes that user uj tweets/retweets the news story ai at time t. we set the time of a source tweet being posted to 0. Thus, t > 0 refers to the time of a retweet being posted.
 
 **GroundTruth** Each news story ai is associatedwith a label L(ai) that reflects its truthfulness. Each label L(ai) ∈ {0, 1}r. When r = 1, L(ai)=0 denotes the news
 story ai is *true*, and L(ai)=1 denotes ai is *fake*.
