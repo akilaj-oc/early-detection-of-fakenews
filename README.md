@@ -1,11 +1,11 @@
 ## TODO
 
-System 1
+##### System 1
  Read propagation paths from database as a variable length sequence
  Transform propagation paths to fixed length sequences, RNN-based propagation path representation, 
  CNN-based propagation path representation, and propagation path classification,
 
- System 2
+##### System 2
 
 
 ## Definitions
