@@ -2,7 +2,6 @@ from utils import TweetsMongoDB
 import time
 import json
 
-
 '''
 get user vectors
 train rnn
@@ -14,9 +13,15 @@ concatenation and prediction
 
 def create_user_vector_sequence():
     records_cascade = TweetsMongoDB.db['fixed_length_cascade']
+
+    # empty vector sequence lower then 5
+    records_cascade.update_many({'$or': [{'user_vector_sequence': {'$size': 1}, 'user_vector_sequence': {'$size': 2},
+                                          'user_vector_sequence': {'$size': 3}, 'user_vector_sequence': {'$size': 4}}],
+                                 '$set': {'user_vector_sequence': []}})
+
+
     cascades = records_cascade.find({'user_vector_sequence.0': {'$exists': False}})
 
-    available = False
 
     # Create buffer variables
     buffer_user_vectors = {}
@@ -28,7 +33,6 @@ def create_user_vector_sequence():
             _id = cascade['_id']
             print(cascade['user_id_sequence'], _id)
             for i, user_id in enumerate(cascade['user_id_sequence']):
-
 
                 # check if user_id is available in the buffer
                 if user_id in buffer_user_vectors.keys():
@@ -68,10 +72,9 @@ def create_user_vector_sequence():
         create_user_vector_sequence()
 
 
-
 def count_to_be_removed():
     records_cascade = TweetsMongoDB.db['timeline_extended']
-    records =  records_cascade.find({'timeline': {'$exists': True, '$size': 0}})
+    records = records_cascade.find({'timeline': {'$exists': True, '$size': 0}})
     count = 0
     to_be_removed = 0
     records_cascade = TweetsMongoDB.db['fixed_length_cascade']
@@ -84,7 +87,6 @@ def count_to_be_removed():
             to_be_removed += 1
     print('empty user ids: ', count)
     print('to be removed: ', to_be_removed)
-
 
 
 def remove_duplicate_sequnece():
@@ -112,7 +114,6 @@ def remove_duplicate_sequnece():
     # records_cascade.remove({"_id": {"$in": response}})
 
 
-
 def create_sequence_id():
     records_cascade = TweetsMongoDB.db['fixed_length_cascade']
     cursor = records_cascade.find()
@@ -126,8 +127,8 @@ def create_sequence_id():
             _id_sequence += str(s_id)
         print(_id_sequence)
         records_cascade.update_one(
-                        {'_id': _id},
-                        {'$set': {'_id_sequence': _id_sequence}})
+            {'_id': _id},
+            {'$set': {'_id_sequence': _id_sequence}})
 
 
 def create_user_vector_sequence_improved():
@@ -147,16 +148,3 @@ if __name__ == '__main__':
     create_user_vector_sequence()
     # remove_duplicate_sequnece()
     # create_sequence_id()
-
-
-    # records_cascade = TweetsMongoDB.db['fixed_length_cascade']
-    # records = records_cascade.find({'user_vector_sequence.0': {'$exists': False}})
-    # count = 0so
-    #
-    # for record in records:
-    #     count += 1
-    # print('user_vector_sequence', count) #8987
-
-    # records_cascade = TweetsMongoDB.db['fixed_length_cascade']
-    # cascades = records_cascade.count({'user_vector_sequence.0': {'$exists': False}})
-    # print(cascades)

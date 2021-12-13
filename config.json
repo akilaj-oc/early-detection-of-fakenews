@@ -1,0 +1,23 @@
+{
+  "model": {
+    "batch_size": 5,
+    "sequence_length": 10,
+    "input_size": 8,
+    "hidden_size": 5,
+    "out_channels": 10,
+    "height": 3,
+    "linear_hidden_size" : 20,
+    "linear_layers" : 5,
+    "output_size" : 2,
+    "rnn_layers" : 32,
+    "cnn_layers" : 32
+  },
+  "data": {
+    "sequence_length": 5
+  },
+  "db_config": {
+    "host": "",
+    "port": ""
+  }
+}
+
