@@ -4,7 +4,8 @@
 <li> Read propagation paths from database as a variable length sequence
 <li> Transform propagation paths to fixed length sequences
 <li> RNN-based propagation path representation, 
-<li> CNN-based propagation path representation, and propagation path classification
+<li> CNN-based propagation path representation
+<li> Propagation path classification
 
 
 ##### Todo
