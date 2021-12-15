@@ -1,11 +1,17 @@
-## TODO
+## Tasks
 
-##### System 1
- Read propagation paths from database as a variable length sequence
- Transform propagation paths to fixed length sequences, RNN-based propagation path representation, 
- CNN-based propagation path representation, and propagation path classification,
+##### Completed
+<li> Read propagation paths from database as a variable length sequence
+<li> Transform propagation paths to fixed length sequences
+<li> RNN-based propagation path representation, 
+<li> CNN-based propagation path representation, and propagation path classification
 
-##### System 2
+
+##### Todo
+<li>Adjust data
+<li>Train model with extracted timeline based features
+<li>Write the paper
+
 
 
 ## Definitions
