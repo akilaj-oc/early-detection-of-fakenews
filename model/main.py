@@ -5,6 +5,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from sklearn.metrics import precision_recall_fscore_support
+from sklearn.metrics import classification_report
+
 from torch.nn import functional as F
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -59,9 +61,10 @@ def train(args, config: dict):
                     tqdm.write("Epoch: {:3,} / Step: {:5,} / Loss: {:10.5f} / Learning rate: {:.4f}".format(epoch, step, loss.item(), lr))
 
             tqdm.write("Evaluating on {:,}".format(epoch))
-            precision, recall, f1, loss = evaluate(model, dev_loader, config)
+            precision, recall, f1, loss, report = evaluate(model, dev_loader, config)
             tqdm.write("Label False | Precision: {:6.4f} | Recall: {:6.4f} | F1-Score: {:6.4f} | Loss: {:.7f}".format(precision[0], recall[0], f1[0], loss))
             tqdm.write("Label True  | Precision: {:6.4f} | Recall: {:6.4f} | F1-Score: {:6.4f} | Loss: {:.7f}".format(precision[1], recall[1], f1[1], loss))
+            tqdm.write(report)
             tqdm.write("\n")
 
 
@@ -92,8 +95,9 @@ def evaluate(model: DetectModel, loader: DataLoader, config: dict)->tuple:
         total_labels = torch.cat(total_labels).cpu().numpy()
 
         precision, recall, f1, _ = precision_recall_fscore_support(total_labels, total_output, labels=[0, 1])
+        report = classification_report(total_labels, total_output)
 
-    return precision, recall, f1, total_loss
+    return precision, recall, f1, total_loss, report
 
 
 if __name__ == '__main__':

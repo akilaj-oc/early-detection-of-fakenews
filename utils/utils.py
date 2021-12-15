@@ -4,9 +4,12 @@ from datetime import datetime
 
 
 class TweetsMongoDB(object):
-    # connect to mongoDB
-    _client = MongoClient('mongodb://localhost:27017/')
-    db = _client.get_database('tweets')
+    def __init__(self, db_name):
+        self.db_name = db_name
+        # connect to mongoDB
+        _client = MongoClient('mongodb://localhost:27017/')
+        self.db = _client.get_database(self.db_name)
+
 
 
 class User(object):

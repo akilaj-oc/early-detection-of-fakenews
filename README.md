@@ -29,3 +29,7 @@ GET tweets.cascades
 ```
 
 
+## Data Collection
+
+Collect True and False cascades from different root users
+Collect random 1% of the total cascade number and limit the cascade depth to 5

@@ -1,4 +1,5 @@
 from utils import TweetsMongoDB
+from utils import Tweets2MongoDB
 
 import json
 import glob
@@ -25,7 +26,8 @@ class Cascade(object):
         for leaf in PreOrderIter(tree, filter_=lambda node: node.is_leaf):
             try:
                 records.insert_one(
-                    {'user_sequence': [node.name for node in list(leaf.path)], 'ground_truth': ground_truth})
+                    {'user_id_sequence': [node.name for node in list(leaf.path)], 'ground_truth': ground_truth,
+                     'root': {'created_at': leaf.root.created_at, 'user_id': leaf.root.name}})
             except Exception as e:
                 raise e
 
@@ -53,7 +55,7 @@ class Cascade(object):
             for value in np.ones(length_difference):
                 random_index = np.random.randint(0, len(sequence_copy))
 
-                #floating index
+                # floating index
                 random_index_change[random_index] += 1
                 random_index_change_sum = sum(random_index_change[:random_index])
 
@@ -86,18 +88,55 @@ def main_create_fixed_length_cascade(fixed_length):
 
     for data in records:
         # print(data)
-        fixed_length_sequence = Cascade.transform_to_fixed_length_sequence(data['user_sequence'], fixed_length)
-        print(fixed_length_sequence)
+
+        fixed_length_sequence = Cascade.transform_to_fixed_length_sequence(data['user_id_sequence'], fixed_length)
 
         # write to mongodb
         records = TweetsMongoDB.db['fixed_length_cascade']
         try:
             records.insert_one(
-                {'user_id_sequence': fixed_length_sequence, 'ground_truth': data['ground_truth'],
-                 'sequence': {'fixed_length': fixed_length}})
+                {'user_id_sequence': fixed_length_sequence,
+                 'ground_truth': data['ground_truth'],
+                 'meta': {'fixed_length': fixed_length, 'unique_id_count': data['meta']['unique_id_count'],
+                          '_id_sequence': data['meta']['_id_sequence']},
+                 'root': {'created_at': data['root']['created_at'], 'user_id': data['root']['user_id']}})
         except Exception as e:
             raise e
 
 
+def create_sequence_id():
+    records_cascade = TweetsMongoDB.db['fixed_length_cascade']
+    cursor = records_cascade.find()
+
+    for record in cursor:
+        sequence = record['user_id_sequence']
+        _id = record['_id']
+        # print(sequence)
+        _id_sequence = ''
+        for s_id in sequence:
+            _id_sequence += str(s_id)
+        # print(_id_sequence)
+        records_cascade.update_one(
+            {'_id': _id},
+            {'$set': {'meta._id_sequence': _id_sequence}})
+
+
+def copy():
+    records_cascade = TweetsMongoDB.db['fixed_length_cascade']
+    records2_cascade = Tweets2MongoDB.db['cascades']
+    cursor = records_cascade.find()
+
+    for record in cursor:
+        _id = record['_id']
+        cursor2 = records2_cascade.find_one({'meta._id_sequence': record['meta']['_id_sequence']})
+        try:
+            records_cascade.update_one({'_id': _id}, {'$set': {'root': {'created_at': cursor2['root']['created_at']}}})
+        except TypeError as e:
+            print(record['meta']['_id_sequence'])
+
+
 if __name__ == '__main__':
-    main_create_fixed_length_cascade(5)
+    main_create_fixed_length_cascade(10)
+    # main_create_cascade()
+    # create_sequence_id()
+    # copy()

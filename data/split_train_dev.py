@@ -56,19 +56,11 @@ if __name__ == '__main__':
     dev_set = []
     true = 0
     false = 0
-    for i, d in enumerate(tqdm(data, desc="Data", ncols=75)):
-        if d.rating == 1:
-            if true < 5:
-                true += 1
-                dev_set.append(d)
-            else:
-                train_set.append(d)
-        elif d.rating == 0:
-            if false < 5:
-                false += 1
-                dev_set.append(d)
-            else:
-                train_set.append(d)
+    for i, d in enumerate(tqdm(data)):
+        if d.user_id == 849800022094880768 or d.user_id == 264361128:
+            dev_set.append(d)
+        else:
+            train_set.append(d)
 
 
     print(bcolors.OKBLUE + "[*] Train set: {:,}".format(len(train_set)) + bcolors.ENDC)
