@@ -95,11 +95,11 @@ def count_to_be_removed():
     print('to be removed: ', to_be_removed)
 
 
-def remove_duplicate_sequnece():
-    records_cascade = TweetsMongoDB.db['fixed_length_cascade']
+def update_duplicate_sequnece():
+    records_cascade = TweetsMongoDB('tweets2').db['fixed_length_cascade']
     cursor = records_cascade.aggregate(
         [
-            {"$group": {"_id": "$_id_fixed_length_sequence", "unique_ids": {"$addToSet": "$_id"},
+            {"$group": {"_id": "$_id_fixed_length_5", "unique_ids": {"$addToSet": "$_id"},
                         "count": {"$sum": 1}}},
             {"$match": {"count": {"$gte": 2}}}
         ]
@@ -111,8 +111,10 @@ def remove_duplicate_sequnece():
         for id in doc["unique_ids"]:
             response.append(id)
 
-    print(len(response))
-    # records_cascade.remove({"_id": {"$in": response}})
+    # print(len(response))
+    records_cascade.update_many({"_id": {"$in": response}}, {'$set': {'length_5_unique': False}})
+    records_cascade.update_many({"_id": {"$nin": response}}, {'$set': {'length_5_unique': True}})
+
 
 
 def create_sequence_id():
@@ -147,6 +149,6 @@ def create_user_vector_sequence_improved():
 
 
 if __name__ == '__main__':
-    create_user_vector_sequence({'user_vector_sequence.0': {'$exists': False}})
-    # remove_duplicate_sequnece()
+    # create_user_vector_sequence({'user_vector_sequence.0': {'$exists': False}})
+    update_duplicate_sequnece()
     # create_sequence_id()

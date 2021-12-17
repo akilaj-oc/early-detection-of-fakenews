@@ -29,8 +29,8 @@ def create_user_vector_to_list(query):
         rating = cascade['ground_truth']
         user_id = cascade['user_id_sequence'][0]
 
-        engaged_users_vector = [User(user).vector.tolist() for user in user_vector_sequence]
-
+        engaged_users_vector = [User(user).vector.tolist() for user in user_vector_sequence[:5]]
+        # print(engaged_users_vector)
         if rating:
             rating = 1
         else:
@@ -73,5 +73,12 @@ def create_json(query):
 
 if __name__ == '__main__':
     records_cascade = TweetsMongoDB('tweets2').db['fixed_length_cascade']
-    create_json({'user_vector_sequence': {'$nin': [0]}, 'user_vector_sequence.9': {'$exists': True}})
+    # create_json({'user_vector_sequence': {'$nin': [0]}, 'user_vector_sequence.9': {'$exists': True},
+    #              '_id_fixed_length_sequence': '1379138530841034752340040091934004009193400400919340040091934004009193400400919138685154556471296113868515455647129611386851545564712961'})
+    create_json(
+        {'user_vector_sequence': {'$nin': [0]}, 'user_vector_sequence.9': {'$exists': True}, 'length_5_unique': True})
+    for i in range(5):
+        create_json(
+            {'user_vector_sequence': {'$nin': [0]}, 'user_vector_sequence.9': {'$exists': True}, 'ground_truth': True,
+             'length_5_unique': True})
     # main()

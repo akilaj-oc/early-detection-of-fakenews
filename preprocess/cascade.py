@@ -1,5 +1,4 @@
 from utils import TweetsMongoDB
-from utils import Tweets2MongoDB
 
 import json
 import glob
@@ -104,8 +103,8 @@ def main_create_fixed_length_cascade(fixed_length):
             raise e
 
 
-def create_sequence_id():
-    records_cascade = TweetsMongoDB.db['fixed_length_cascade']
+def create_sequence_id(fixed_length):
+    records_cascade = TweetsMongoDB('tweets2').db['fixed_length_cascade']
     cursor = records_cascade.find()
 
     for record in cursor:
@@ -113,12 +112,12 @@ def create_sequence_id():
         _id = record['_id']
         # print(sequence)
         _id_sequence = ''
-        for s_id in sequence:
+        for s_id in sequence[:fixed_length]:
             _id_sequence += str(s_id)
         # print(_id_sequence)
         records_cascade.update_one(
             {'_id': _id},
-            {'$set': {'meta._id_sequence': _id_sequence}})
+            {'$set': {'_id_fixed_length_' + str(fixed_length): _id_sequence}})
 
 
 def copy():
@@ -136,7 +135,7 @@ def copy():
 
 
 if __name__ == '__main__':
-    main_create_fixed_length_cascade(10)
+    # main_create_fixed_length_cascade(10)
     # main_create_cascade()
-    # create_sequence_id()
+    create_sequence_id(5)
     # copy()
