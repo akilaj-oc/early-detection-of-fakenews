@@ -69,8 +69,8 @@ class DetectModel(nn.Module):
 
 if __name__ == '__main__':
     batch_size = 5
-    sequence_length = 10
-    input_size = 15
+    sequence_length = 5
+    input_size = 18
     hidden_size = 5
     out_channels = 10
     height = 3

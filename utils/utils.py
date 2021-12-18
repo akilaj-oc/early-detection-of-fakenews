@@ -76,6 +76,68 @@ class User(object):
         return 1 if self.user['geo_enabled'] else 0
 
 
+class Timeline(object):
+    def __init__(self, timeline):
+        self.timeline = timeline
+        super(Timeline, self).__init__()
+
+    @property
+    def vector(self):
+        return np.array([self.get_i,
+                         self.get_you_total,
+                         self.get_adverb,
+                         self.get_negate,
+                         self.get_number,
+                         self.get_see,
+                         self.get_hear,
+                         self.get_sexual,
+                         self.get_money,
+                         self.get_swear])
+
+
+    @property
+    def get_i(self):
+        return self.timeline['i']
+
+    @property
+    def get_you_total(self):
+        return self.timeline['you_total']
+
+    @property
+    def get_adverb(self):
+        return self.timeline['adverb']
+
+    @property
+    def get_negate(self):
+        return self.timeline['negate']
+
+    @property
+    def get_number(self):
+        return self.timeline['number']
+
+    @property
+    def get_see(self):
+        return self.timeline['see']
+
+    @property
+    def get_hear(self):
+        return self.timeline['hear']
+
+    @property
+    def get_sexual(self):
+        return self.timeline['sexual']
+
+    @property
+    def get_money(self):
+        return self.timeline['money']
+
+    @property
+    def get_swear(self):
+        return self.timeline['swear']
+
+
+
+
 class bcolors(object):
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
