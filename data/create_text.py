@@ -21,12 +21,13 @@ def create_text():
     pbar.close()
 
     unique_ids = list(dict.fromkeys(unique_ids))
-    if len(created_ids) != 0:
-        unique_ids = list(set(unique_ids) - set(created_ids))
 
     # save unique_ids as a json
     with open('C:/Users/Akila/Desktop/' + folder_name + '/unique_ids.json', 'w', encoding="utf-8") as f:
         f.write(json.dumps({"unique_ids" : unique_ids}))
+
+    if len(created_ids) != 0:
+        unique_ids = list(set(unique_ids) - set(created_ids))
 
     # pbar = tqdm(total=len(unique_ids), desc='Create text files')
     #
@@ -45,7 +46,7 @@ if __name__ == '__main__':
     created_ids = []
     query = {'user_vector_sequence': {'$nin': [0]}, 'user_vector_sequence.5': {'$exists': True}, 'length_5_unique': True}
     for file in glob.glob('C:\\Users\\Akila\\Desktop\\' + folder_name + '\\*.txt'):
-        created_ids.append(file[30:-4])
+        created_ids.append(int(file[24 + len(folder_name):-4]))
 
     try:
         create_text()
