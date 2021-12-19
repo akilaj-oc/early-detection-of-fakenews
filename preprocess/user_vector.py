@@ -12,7 +12,7 @@ concatenation and prediction
 '''
 
 
-def create_user_vector_sequence(query, pop_db, pop_coll):
+def create_user_vector_sequence(query, pop_db, pop_coll, folder_name):
     records_cascade = TweetsMongoDB('tweets2').db['fixed_length_cascade']
 
     # # empty vector sequence lower then 5
@@ -33,7 +33,7 @@ def create_user_vector_sequence(query, pop_db, pop_coll):
         for cascade in cascades:
             start_time = time.time()
             _id = cascade['_id']
-            # print(cascade['user_id_sequence'], _id)
+
             for i, user_id in enumerate(cascade['user_id_sequence'][:5]):
                 # print(user_id)
                 # check if user_id is available in the buffer
@@ -45,7 +45,7 @@ def create_user_vector_sequence(query, pop_db, pop_coll):
                     elif pop_db == 'tweets2' and pop_coll == 'user_timeline_liwc':
                         records_cascade.update_one(
                             {'_id': _id},
-                            {'$push': {'length_5_timeline_10': buffer_user_vectors[user_id]}})
+                            {'$push': {folder_name: buffer_user_vectors[user_id]}})
 
                 else:
                     if pop_db == 'tweets' and pop_coll == 'timeline_extended':
@@ -61,7 +61,7 @@ def create_user_vector_sequence(query, pop_db, pop_coll):
                         if pop_db == 'tweets' and pop_coll == 'timeline_extended':
                             buffer_user_vectors[user_id] = timeline['timeline'][0]['user']
                         elif pop_db == 'tweets2' and pop_coll == 'user_timeline_liwc':
-                            buffer_user_vectors[user_id] = timeline['length_5_timeline_10']
+                            buffer_user_vectors[user_id] = timeline[folder_name]
 
                         if pop_db == 'tweets' and pop_coll == 'timeline_extended':
                             records_cascade.update_one(
@@ -72,7 +72,7 @@ def create_user_vector_sequence(query, pop_db, pop_coll):
                                 {'_id': _id},
                                 {'$push':
                                     {
-                                        'length_5_timeline_10': timeline['length_5_timeline_10']}})
+                                        folder_name: timeline[folder_name]}})
 
                     except IndexError:
                         buffer_user_vectors[user_id] = 0
@@ -80,7 +80,7 @@ def create_user_vector_sequence(query, pop_db, pop_coll):
                             {'_id': _id},
                             {{'$push':
                                 {
-                                    'length_5_timeline_10': timeline['length_5_timeline_10']}}})
+                                    folder_name: timeline[folder_name]}}})
                     except Exception as e:
                         continue
                 # print('dict len: ', len(buffer_user_vectors))
@@ -170,7 +170,8 @@ def create_user_vector_sequence_improved():
 
 if __name__ == '__main__':
     # create_user_vector_sequence({'user_vector_sequence.0': {'$exists': False}}, 'tweets', 'timeline_extended')
-    create_user_vector_sequence({'length_5_timeline_10.0': {'$exists': False}}, 'tweets2', 'user_timeline_liwc')
+    create_user_vector_sequence({'length_5_timeline_max.0': {'$exists': False}}, 'tweets2', 'user_timeline_liwc',
+                                'length_5_timeline_max')
     # create_user_vector_sequence({'length_5_timeline_10.0': {'$exists': False},
     #                              '_id_fixed_length_sequence': '137913853084103475213791385308410347521379138530841034752137913853084103475213791385308410347521379138530841034752301039688301039688301039688301039688'},
     #                             'tweets2', 'user_timeline_liwc')

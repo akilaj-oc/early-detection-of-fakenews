@@ -58,6 +58,7 @@ if __name__ == '__main__':
     false = 0
     for i, d in enumerate(tqdm(data)):
         if d.user_id == 849800022094880768 or d.user_id == 264361128:
+        # if d.user_id == 264361128:
             dev_set.append(d)
         else:
             train_set.append(d)

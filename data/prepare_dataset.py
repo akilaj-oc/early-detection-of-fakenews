@@ -27,18 +27,25 @@ def create_user_vector_to_list(query):
     for cascade in cascades:
         _id = cascade['_id']
         user_vector_sequence = cascade['user_vector_sequence']
-        length_5_timeline_10 = cascade['length_5_timeline_10']
+        length_5_timeline_max = cascade['length_5_timeline_max']
         rating = cascade['ground_truth']
         user_id = cascade['user_id_sequence'][0]
 
         engaged_users_vector = []
-        for i in range(5):
-            engaged_users_vector.append(User(user_vector_sequence[i]).vector.tolist() + Timeline(length_5_timeline_10[i]).vector.tolist())
 
+        # Get first 5 vectors
+        # for i in range(5):
+        #     engaged_users_vector.append(User(user_vector_sequence[i]).vector.tolist() + Timeline(length_5_timeline_max[i]).vector.tolist())
+
+        for i in range(5):
+            engaged_users_vector.append(Timeline(length_5_timeline_max[i]).vector.tolist())
 
         # engaged_users_vector = [User(user).vector.tolist() for user in user_vector_sequence[:5]]
-        # length_5_timeline_10_vector = [Timeline(timeline).vector.tolist() for timeline in length_5_timeline_10[:5]]
+        # length_5_timeline_max_vector = [Timeline(timeline).vector.tolist() for timeline in length_5_timeline_max[:5]]
         # print(engaged_users_vector)
+
+    # end get 5 vectors
+
         if rating:
             rating = 1
         else:
@@ -83,10 +90,12 @@ if __name__ == '__main__':
     records_cascade = TweetsMongoDB('tweets2').db['fixed_length_cascade']
     # create_json({'user_vector_sequence': {'$nin': [0]}, 'user_vector_sequence.9': {'$exists': True},
     #              '_id_fixed_length_sequence': '1379138530841034752340040091934004009193400400919340040091934004009193400400919138685154556471296113868515455647129611386851545564712961'})
-    create_json(
-        {'user_vector_sequence': {'$nin': [0]}, 'length_5_timeline_10.4': {'$exists': True}, 'length_5_unique': True})
-    for i in range(5):
-        create_json(
-            {'user_vector_sequence': {'$nin': [0]}, 'length_5_timeline_10.4': {'$exists': True}, 'ground_truth': True,
-             'length_5_unique': True})
-    # main()
+    # create_json(
+    #     {'user_vector_sequence': {'$nin': [0]}, 'length_5_timeline_max.4': {'$exists': True}, 'length_5_unique': True})
+
+
+    # for i in range(2):
+    #     create_json(
+    #         {'user_vector_sequence': {'$nin': [0]}, 'length_5_timeline_max.4': {'$exists': True}, 'ground_truth': True,
+    #          'length_5_unique': True})
+    main()
